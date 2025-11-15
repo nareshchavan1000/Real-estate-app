@@ -1,0 +1,237 @@
+{
+  "info": {
+    "name": "Real Estate Management API",
+    "description": "CRUD API for Real Estate Properties and Users",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "USERS",
+      "item": [
+        {
+          "name": "Create User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"role\": \"OWNER\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8083/api/users",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8083",
+              "path": ["api", "users"]
+            },
+            "description": "Create a new user with name, email, and role (OWNER, AGENT, or BUYER)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8083/api/users",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8083",
+              "path": ["api", "users"]
+            },
+            "description": "Retrieve all users from the database"
+          },
+          "response": []
+        },
+        {
+          "name": "Get User by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8083/api/users/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8083",
+              "path": ["api", "users", "1"]
+            },
+            "description": "Get a specific user by their ID (replace 1 with desired user ID)"
+          },
+          "response": []
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Smith\",\n  \"email\": \"john.smith@example.com\",\n  \"role\": \"AGENT\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8083/api/users/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8083",
+              "path": ["api", "users", "1"]
+            },
+            "description": "Update an existing user (replace 1 with desired user ID)"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8083/api/users/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8083",
+              "path": ["api", "users", "1"]
+            },
+            "description": "Delete a user by ID (replace 1 with desired user ID)"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "PROPERTIES",
+      "item": [
+        {
+          "name": "Create Property",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Beautiful 3 BHK House\",\n  \"description\": \"Spacious house with modern amenities, 3 bedrooms, 2 bathrooms\",\n  \"type\": \"BUY\",\n  \"price\": 500000,\n  \"location\": \"New York, NY\",\n  \"ownerId\": 1,\n  \"status\": \"AVAILABLE\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8083/api/properties",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8083",
+              "path": ["api", "properties"]
+            },
+            "description": "Create a new property listing. Type can be BUY or RENT"
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Properties",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8083/api/properties",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8083",
+              "path": ["api", "properties"]
+            },
+            "description": "Get all properties from the database"
+          },
+          "response": []
+        },
+        {
+          "name": "Search Properties by Location",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8083/api/properties?location=New York",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8083",
+              "path": ["api", "properties"],
+              "query": [
+                {
+                  "key": "location",
+                  "value": "New York"
+                }
+              ]
+            },
+            "description": "Search properties by location (case-insensitive partial match)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Property by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8083/api/properties/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8083",
+              "path": ["api", "properties", "1"]
+            },
+            "description": "Get a specific property by ID (replace 1 with desired property ID)"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Property",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Beautiful 4 BHK House\",\n  \"description\": \"Spacious house with modern amenities, 4 bedrooms, 3 bathrooms, pool\",\n  \"type\": \"BUY\",\n  \"price\": 650000,\n  \"location\": \"New York, NY\",\n  \"ownerId\": 1,\n  \"status\": \"PENDING\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8083/api/properties/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8083",
+              "path": ["api", "properties", "1"]
+            },
+            "description": "Update an existing property (replace 1 with desired property ID)"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Property",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8083/api/properties/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8083",
+              "path": ["api", "properties", "1"]
+            },
+            "description": "Delete a property by ID (replace 1 with desired property ID)"
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

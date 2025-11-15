@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard - Real Estate Management</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .navbar {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar h3 {
+            margin: 0;
+            color: #333;
+            font-weight: 700;
+        }
+
+        .navbar-right {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .user-info {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .user-info strong {
+            color: #333;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            background-color: #d4e9ff;
+            color: #667eea;
+        }
+
+        .btn-logout {
+            padding: 8px 16px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+
+        .btn-logout:hover {
+            background-color: #c82333;
+        }
+
+        .container-main {
+            padding: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 0;
+        }
+
+        .tab-btn {
+            padding: 15px 25px;
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 15px;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            margin-bottom: -2px;
+        }
+
+        .tab-btn.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .tab-btn:hover {
+            color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .card h4 {
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .search-bar input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .search-bar button {
+            padding: 10px 20px;
+            background-color: #667eea;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .search-bar button:hover {
+            background-color: #5568d3;
+        }
+
+        .property-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .property-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .property-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .property-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+        }
+
+        .property-header h5 {
+            margin: 0;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .property-body {
+            padding: 20px;
+        }
+
+        .property-body p {
+            margin-bottom: 8px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .property-body strong {
+            color: #333;
+        }
+
+        .property-price {
+            font-size: 20px;
+            color: #667eea;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+
+        .property-footer {
+            padding: 15px 20px;
+            background-color: #f8f9fa;
+            display: flex;
+            gap: 10px;
+        }
+
+        .property-footer button {
+            flex: 1;
+            padding: 8px;
+            font-size: 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background-color: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #5568d3;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            color: #555;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 13px;
+            font-family: inherit;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .empty-state a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .empty-state a:hover {
+            text-decoration: underline;
+        }
+
+        .btn-submit {
+            padding: 10px 20px;
+            background-color: #667eea;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+
+        .btn-submit:hover {
+            background-color: #5568d3;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h3>🏢 Real Estate Platform</h3>
+        <div class="navbar-right">
+            <div class="user-info">
+                Welcome, <strong id="userUserName">User</strong>
+                <span class="badge">User</span>
+            </div>
+            <button class="btn-logout" onclick="handleLogout()">Logout</button>
+        </div>
+    </div>
+
+    <div class="container-main">
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('browse')">🔍 Browse Properties</button>
+            <button class="tab-btn" onclick="switchTab('myproperties')">🏠 My Properties</button>
+            <button class="tab-btn" onclick="switchTab('addproperty')">➕ List New Property</button>
+        </div>
+
+        <!-- Browse Properties Tab -->
+        <div id="browse" class="tab-content active">
+            <div class="card">
+                <div class="search-bar">
+                    <input type="text" id="searchLocation" placeholder="Search by location...">
+                    <button onclick="searchProperties()">Search</button>
+                    <button onclick="loadAllProperties()" class="btn-secondary">Clear</button>
+                </div>
+                <div id="browseContainer"></div>
+            </div>
+        </div>
+
+        <!-- My Properties Tab -->
+        <div id="myproperties" class="tab-content">
+            <div class="card">
+                <h4>My Listed Properties</h4>
+                <div id="myPropertiesContainer"></div>
+            </div>
+        </div>
+
+        <!-- Add Property Tab -->
+        <div id="addproperty" class="tab-content">
+            <div class="card">
+                <h4>List a New Property</h4>
+                <form onsubmit="handleAddProperty(event)">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Property Title</label>
+                            <input type="text" id="propTitle" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Type</label>
+                            <select id="propType" required>
+                                <option value="BUY">For Sale</option>
+                                <option value="RENT">For Rent</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Price</label>
+                            <input type="number" id="propPrice" required step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label>Location</label>
+                            <input type="text" id="propLocation" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Status</label>
+                            <select id="propStatus" required>
+                                <option value="AVAILABLE">Available</option>
+                                <option value="PENDING">Pending</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="propDesc" rows="4" style="resize: vertical;"></textarea>
+                    </div>
+                    <button type="submit" class="btn-submit">List Property</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8083/api';
+        let currentUser = null;
+
+        // Initialize on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            const user = localStorage.getItem('currentUser');
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            currentUser = JSON.parse(user);
+            if (currentUser.role !== 'USER') {
+                window.location.href = 'admin.html';
+                return;
+            }
+
+            document.getElementById('userUserName').textContent = currentUser.name;
+            loadAllProperties();
+            loadMyProperties();
+        });
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tab).classList.add('active');
+            event.target.classList.add('active');
+
+            if (tab === 'myproperties') {
+                loadMyProperties();
+            }
+        }
+
+        async function loadAllProperties() {
+            try {
+                const response = await fetch(`${API_BASE}/properties`);
+                const properties = await response.json();
+                displayBrowseProperties(properties);
+            } catch (error) {
+                console.error('Error loading properties:', error);
+            }
+        }
+
+        function displayBrowseProperties(properties) {
+            const container = document.getElementById('browseContainer');
+            container.innerHTML = '';
+
+            if (properties.length === 0) {
+                container.innerHTML = '<div class="empty-state"><p>No properties available</p></div>';
+                return;
+            }
+
+            const grid = document.createElement('div');
+            grid.className = 'property-grid';
+
+            properties.forEach(prop => {
+                const card = document.createElement('div');
+                card.className = 'property-card';
+                card.innerHTML = `
+                    <div class="property-header">
+                        <h5>${prop.title}</h5>
+                    </div>
+                    <div class="property-body">
+                        <p><strong>Type:</strong> ${prop.type === 'BUY' ? 'For Sale' : 'For Rent'}</p>
+                        <p><strong>Location:</strong> ${prop.location}</p>
+                        <p><strong>Description:</strong> ${prop.description}</p>
+                        <div class="property-price">₹${parseFloat(prop.price).toLocaleString()}</div>
+                        <p><strong>Status:</strong> ${prop.status}</p>
+                    </div>
+                    <div class="property-footer">
+                        <button class="btn-primary" onclick="viewProperty(${prop.id})">View Details</button>
+                        <button class="btn-secondary" onclick="contactSeller(${prop.id})">Contact</button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+
+            container.appendChild(grid);
+        }
+
+        async function searchProperties() {
+            const location = document.getElementById('searchLocation').value;
+            if (!location.trim()) {
+                loadAllProperties();
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/properties?location=${location}`);
+                const properties = await response.json();
+                displayBrowseProperties(properties);
+            } catch (error) {
+                console.error('Error searching properties:', error);
+            }
+        }
+
+        async function loadMyProperties() {
+            try {
+                const response = await fetch(`${API_BASE}/properties`);
+                const allProperties = await response.json();
+                const myProperties = allProperties.filter(p => p.ownerId === currentUser.id);
+                displayMyProperties(myProperties);
+            } catch (error) {
+                console.error('Error loading my properties:', error);
+            }
+        }
+
+        function displayMyProperties(properties) {
+            const container = document.getElementById('myPropertiesContainer');
+            container.innerHTML = '';
+
+            if (properties.length === 0) {
+                container.innerHTML = '<div class="empty-state"><p>You haven\'t listed any properties yet. <a href="#" onclick="switchToAddTab()">Start listing</a></p></div>';
+                return;
+            }
+
+            const grid = document.createElement('div');
+            grid.className = 'property-grid';
+
+            properties.forEach(prop => {
+                const card = document.createElement('div');
+                card.className = 'property-card';
+                card.innerHTML = `
+                    <div class="property-header">
+                        <h5>${prop.title}</h5>
+                    </div>
+                    <div class="property-body">
+                        <p><strong>Type:</strong> ${prop.type === 'BUY' ? 'For Sale' : 'For Rent'}</p>
+                        <p><strong>Location:</strong> ${prop.location}</p>
+                        <p><strong>Description:</strong> ${prop.description}</p>
+                        <div class="property-price">₹${parseFloat(prop.price).toLocaleString()}</div>
+                        <p><strong>Status:</strong> ${prop.status}</p>
+                    </div>
+                    <div class="property-footer">
+                        <button class="btn-danger" onclick="deleteMyProperty(${prop.id})">Delete</button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+
+            container.appendChild(grid);
+        }
+
+        async function handleAddProperty(event) {
+            event.preventDefault();
+            const title = document.getElementById('propTitle').value;
+            const type = document.getElementById('propType').value;
+            const price = document.getElementById('propPrice').value;
+            const location = document.getElementById('propLocation').value;
+            const status = document.getElementById('propStatus').value;
+            const description = document.getElementById('propDesc').value;
+
+            try {
+                const response = await fetch(`${API_BASE}/properties`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        title,
+                        type,
+                        price,
+                        location,
+                        ownerId: currentUser.id,
+                        status,
+                        description
+                    })
+                });
+
+                if (response.ok) {
+                    event.target.reset();
+                    loadMyProperties();
+                    alert('Property listed successfully!');
+                } else {
+                    alert('Failed to list property');
+                }
+            } catch (error) {
+                console.error('Error adding property:', error);
+                alert('Error listing property');
+            }
+        }
+
+        async function deleteMyProperty(id) {
+            if (!confirm('Delete this property?')) return;
+
+            try {
+                const response = await fetch(`${API_BASE}/properties/${id}`, { method: 'DELETE' });
+                if (response.ok) {
+                    loadMyProperties();
+                } else {
+                    alert('Failed to delete property');
+                }
+            } catch (error) {
+                console.error('Error deleting property:', error);
+            }
+        }
+
+        function viewProperty(id) {
+            alert('Property details view would be implemented here for property ID: ' + id);
+        }
+
+        function contactSeller(id) {
+            alert('Contact seller functionality would be implemented here for property ID: ' + id);
+        }
+
+        function switchToAddTab() {
+            const addBtn = Array.from(document.querySelectorAll('.tab-btn')).find(btn => btn.textContent.includes('List New'));
+            if (addBtn) addBtn.click();
+        }
+
+        function handleLogout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('currentUser');
+                window.location.href = 'login.html';
+            }
+        }
+    </script>
+</body>
+</html>
