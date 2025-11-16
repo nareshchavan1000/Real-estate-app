@@ -120,13 +120,23 @@ async function loadAdminUsers() {
         const response = await fetch(`${API_BASE}/users`);
         const users = await response.json();
         displayAdminUsers(users);
+        // Show the table container
+        const tableContainer = document.getElementById('usersTableContainer');
+        if (tableContainer) {
+            tableContainer.style.display = 'block';
+        }
     } catch (error) {
         console.error('Error loading users:', error);
+        alert('Error loading users. Please check the console.');
     }
 }
 
 function displayAdminUsers(users) {
     const tbody = document.getElementById('usersTableBody');
+    if (!tbody) {
+        console.error('usersTableBody not found');
+        return;
+    }
     tbody.innerHTML = '';
 
     if (users.length === 0) {
@@ -204,13 +214,23 @@ async function loadAdminProperties() {
         const response = await fetch(`${API_BASE}/properties`);
         const properties = await response.json();
         displayAdminProperties(properties);
+        // Show the table container
+        const tableContainer = document.getElementById('propertiesTableContainer');
+        if (tableContainer) {
+            tableContainer.style.display = 'block';
+        }
     } catch (error) {
         console.error('Error loading properties:', error);
+        alert('Error loading properties. Please check the console.');
     }
 }
 
 function displayAdminProperties(properties) {
     const tbody = document.getElementById('propertiesTableBody');
+    if (!tbody) {
+        console.error('propertiesTableBody not found');
+        return;
+    }
     tbody.innerHTML = '';
 
     if (properties.length === 0) {
@@ -467,6 +487,58 @@ function viewPropertyDetails(id) {
 
 function contactSeller(id) {
     alert('Contact seller functionality would be implemented here for property ID: ' + id);
+}
+
+// ============ Wrapper Functions for Button Handlers ============
+
+function loadUsers() {
+    loadAdminUsers();
+}
+
+function viewAllProperties() {
+    loadAdminProperties();
+}
+
+function switchTab(tabName) {
+    // Hide all tabs
+    document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    
+    // Show selected tab
+    const selectedTab = document.getElementById(tabName);
+    if (selectedTab) {
+        selectedTab.classList.add('active');
+    }
+    
+    // Mark button as active
+    event.target.classList.add('active');
+}
+
+function switchUserTab(tabName) {
+    // Hide all tabs
+    document.querySelectorAll('.user-tab-content').forEach(tab => tab.classList.remove('active'));
+    document.querySelectorAll('.user-tab-btn').forEach(btn => btn.classList.remove('active'));
+    
+    // Show selected tab
+    const selectedTab = document.getElementById(tabName);
+    if (selectedTab) {
+        selectedTab.classList.add('active');
+    }
+    
+    // Mark button as active
+    event.target.classList.add('active');
+    
+    // Load data for My Properties
+    if (tabName === 'userMyProps' && currentUser && currentUser.role === 'USER') {
+        loadUserMyProperties();
+    }
+}
+
+function handleLogout() {
+    const confirmLogout = confirm('Are you sure you want to logout?');
+    if (confirmLogout) {
+        logout();
+    }
 }
 
 // ============ Initialize on Page Load ============

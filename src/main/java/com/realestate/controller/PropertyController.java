@@ -2,6 +2,7 @@ package com.realestate.controller;
 
 import com.realestate.entity.Property;
 import com.realestate.service.PropertyService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,13 +32,13 @@ public class PropertyController {
     }
 
     @PostMapping
-    public ResponseEntity<Property> create(@RequestBody Property property) {
+    public ResponseEntity<Property> create(@Valid @RequestBody Property property) {
         Property created = propertyService.create(property);
         return ResponseEntity.created(URI.create("/api/properties/" + created.getId())).body(created);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Property> update(@PathVariable Long id, @RequestBody Property property) {
+    public ResponseEntity<Property> update(@PathVariable Long id, @Valid @RequestBody Property property) {
         return propertyService.update(id, property)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());

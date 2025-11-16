@@ -1,10 +1,17 @@
 package com.realestate.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -14,18 +21,54 @@ public class Property {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    
+    @Column(nullable = false, length = 200)
+    @NotBlank(message = "Title is required")
+    @Size(max = 200, message = "Title must not exceed 200 characters")
     private String title;
+    
+    @Column(length = 1000)
+    @Size(max = 1000, message = "Description must not exceed 1000 characters")
     private String description;
+    
+    @Column(nullable = false, length = 10)
+    @NotBlank(message = "Type is required")
+    @Pattern(regexp = "^(BUY|RENT)$", message = "Type must be either BUY or RENT")
     private String type; // BUY or RENT
+    
+    @Column(nullable = false, precision = 15, scale = 2)
+    @NotNull(message = "Price is required")
+    @DecimalMin(value = "0.0", inclusive = false, message = "Price must be greater than 0")
     private BigDecimal price;
+    
+    @Column(nullable = false, length = 255)
+    @NotBlank(message = "Location is required")
+    @Size(max = 255, message = "Location must not exceed 255 characters")
     private String location;
+    
+    @Column(nullable = false)
+    @NotNull(message = "Owner ID is required")
     private Long ownerId;
+    
+    @Column(nullable = false, length = 20)
+    @Pattern(regexp = "^(AVAILABLE|PENDING|SOLD)$", message = "Status must be AVAILABLE, PENDING, or SOLD")
     private String status; // e.g., AVAILABLE, PENDING, SOLD
+    
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     public Property() {
-        this.createdAt = LocalDateTime.now();
         this.status = "AVAILABLE";
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        if (createdAt == null) {
+            createdAt = LocalDateTime.now();
+        }
+        if (status == null) {
+            status = "AVAILABLE";
+        }
     }
 
     public Long getId() {

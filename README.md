@@ -46,7 +46,7 @@ AFTER:  Dedicated pages for each function - NO SCROLLING! ✓
 ## 🛠️ Tech Stack
 
 - **Backend:** Spring Boot 3.1.5 + Spring Data JPA
-- **Database:** H2 (in-memory)
+- **Database:** MySQL 8.0+
 - **Frontend:** HTML5, CSS3, JavaScript (Vanilla)
 - **UI Framework:** Bootstrap 5
 - **API:** RESTful JSON API with CORS support
@@ -55,6 +55,8 @@ AFTER:  Dedicated pages for each function - NO SCROLLING! ✓
 
 - Java 17 or higher
 - Maven 3.6+
+- MySQL 8.0+ installed and running
+- Database `real_estate_db` created (or will be auto-created)
 
 ## ⚙️ Installation & Running
 
@@ -170,10 +172,15 @@ src/main/
 
 ## 🗄️ Database
 
-- H2 in-memory database
-- Auto-creates tables on startup
-- H2 Console available at `/h2-console`
-- Data resets on application restart
+- MySQL 8.0+ database
+- Database name: `real_estate_db`
+- Auto-creates tables on startup (via `spring.jpa.hibernate.ddl-auto=update`)
+- Tables persist data between application restarts
+- **Setup:** Create database before running:
+  ```sql
+  CREATE DATABASE real_estate_db;
+  ```
+- **Environment Variables:** Set `DB_USERNAME` and `DB_PASSWORD` (defaults to `root` and empty)
 
 ## 📝 Example Workflow
 
@@ -205,7 +212,7 @@ src/main/
 
 - Startup time: ~3 seconds
 - Response time: <100ms for API calls
-- In-memory database for fast access
+- MySQL database for persistent data storage
 - Lightweight Bootstrap CSS (~30KB)
 
 ## 🔐 Security Notes
@@ -245,10 +252,22 @@ server.port=8083
 File: `src/main/resources/application.properties`
 ```properties
 server.port=8083
+
+# MySQL Database Configuration
+spring.datasource.url=jdbc:mysql://localhost:3306/real_estate_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+spring.datasource.driverClassName=com.mysql.cj.jdbc.Driver
+spring.datasource.username=${DB_USERNAME:root}
+spring.datasource.password=${DB_PASSWORD:}
+
+# JPA/Hibernate Configuration
+spring.jpa.database-platform=org.hibernate.dialect.MySQLDialect
 spring.jpa.hibernate.ddl-auto=update
-spring.h2.console.enabled=true
-spring.datasource.url=jdbc:h2:mem:remdb
+spring.jpa.show-sql=true
 ```
+
+**Environment Variables:**
+- `DB_USERNAME` - MySQL username (default: `root`)
+- `DB_PASSWORD` - MySQL password (required, no default)
 
 ## 🚀 Future Enhancements
 

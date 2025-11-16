@@ -1,6 +1,7 @@
 package com.realestate.config;
 
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import com.realestate.entity.User;
 import com.realestate.entity.Property;
@@ -13,10 +14,12 @@ public class DataSeeder implements CommandLineRunner {
 
     private final UserRepository userRepository;
     private final PropertyRepository propertyRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public DataSeeder(UserRepository userRepository, PropertyRepository propertyRepository) {
+    public DataSeeder(UserRepository userRepository, PropertyRepository propertyRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.propertyRepository = propertyRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -26,14 +29,14 @@ public class DataSeeder implements CommandLineRunner {
             return;
         }
 
-        // Create Admin Users
-        User admin1 = new User(null, "Admin User", "admin@example.com", "admin123", "ADMIN");
-        User admin2 = new User(null, "Property Manager", "admin2@example.com", "admin123", "ADMIN");
+        // Create Admin Users (with encrypted passwords)
+        User admin1 = new User(null, "Admin User", "admin@example.com", passwordEncoder.encode("admin123"), "ADMIN");
+        User admin2 = new User(null, "Property Manager", "admin2@example.com", passwordEncoder.encode("admin123"), "ADMIN");
 
-        // Create Regular Users
-        User user1 = new User(null, "John Doe", "user@example.com", "user123", "USER");
-        User user2 = new User(null, "Jane Smith", "user2@example.com", "user123", "USER");
-        User user3 = new User(null, "Mike Johnson", "user3@example.com", "user123", "USER");
+        // Create Regular Users (with encrypted passwords)
+        User user1 = new User(null, "John Doe", "user@example.com", passwordEncoder.encode("user123"), "USER");
+        User user2 = new User(null, "Jane Smith", "user2@example.com", passwordEncoder.encode("user123"), "USER");
+        User user3 = new User(null, "Mike Johnson", "user3@example.com", passwordEncoder.encode("user123"), "USER");
 
         // Save users
         admin1 = userRepository.save(admin1);

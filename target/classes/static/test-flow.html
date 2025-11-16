@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real Estate App - Flow Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+        }
+        
+        h1 {
+            color: #667eea;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .test-section {
+            background: #f9f9f9;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+        }
+        
+        .test-section h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            transition: all 0.3s;
+        }
+        
+        .btn:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .btn-danger {
+            background: #e74c3c;
+        }
+        
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+        
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            background: #ecf0f1;
+            border-radius: 6px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .status-ok {
+            color: #27ae60;
+            background: #d5f4e6;
+        }
+        
+        .status-error {
+            color: #e74c3c;
+            background: #fadbd8;
+        }
+        
+        .status-info {
+            color: #3498db;
+            background: #d6eaf8;
+        }
+        
+        code {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        pre {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin-top: 10px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Real Estate App - Flow Test</h1>
+        
+        <div class="test-section">
+            <h3>1️⃣ Test API Connection</h3>
+            <button class="btn" onclick="testAPI()">Test API Base URL</button>
+            <div id="apiStatus" class="status"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>2️⃣ Test Login Endpoint</h3>
+            <button class="btn" onclick="testLogin()">Test Login (admin@example.com)</button>
+            <div id="loginStatus" class="status"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>3️⃣ Test Data Endpoints</h3>
+            <button class="btn" onclick="testUsersEndpoint()">Get /users</button>
+            <button class="btn" onclick="testPropertiesEndpoint()">Get /properties</button>
+            <div id="dataStatus" class="status"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>4️⃣ localStorage Operations</h3>
+            <button class="btn" onclick="setTestUser()">Set Test User in localStorage</button>
+            <button class="btn btn-danger" onclick="clearLocalStorage()">Clear localStorage</button>
+            <button class="btn" onclick="showLocalStorage()">Show localStorage</button>
+            <div id="storageStatus" class="status"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>5️⃣ Navigate</h3>
+            <button class="btn" onclick="goToAdmin()">Go to Admin Page</button>
+            <button class="btn" onclick="goToLogin()">Go to Login Page</button>
+            <button class="btn" onclick="goToIndex()">Go to Index Page</button>
+            <div id="navStatus" class="status"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>6️⃣ Check Page Structure</h3>
+            <button class="btn" onclick="checkAdminStructure()">Check Admin.html Structure</button>
+            <div id="structureStatus" class="status"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8083/api';
+        
+        function log(id, message, type = 'info') {
+            const el = document.getElementById(id);
+            const timestamp = new Date().toLocaleTimeString();
+            const icon = type === 'ok' ? '✅' : type === 'error' ? '❌' : 'ℹ️';
+            const statusClass = type === 'ok' ? 'status-ok' : type === 'error' ? 'status-error' : 'status-info';
+            el.innerHTML = `<div class="${statusClass}">${icon} [${timestamp}] ${message}</div>`;
+        }
+        
+        async function testAPI() {
+            log('apiStatus', 'Testing API connection to ' + API_BASE + '...', 'info');
+            try {
+                const response = await fetch(`${API_BASE}/auth/test`, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
+                }).catch(e => {
+                    throw new Error(`Fetch failed: ${e.message}`);
+                });
+                
+                if (response.ok || response.status === 404) {
+                    log('apiStatus', 'API server is reachable at ' + API_BASE, 'ok');
+                } else {
+                    log('apiStatus', `API returned status ${response.status}`, 'error');
+                }
+            } catch (error) {
+                log('apiStatus', `Connection error: ${error.message}. Make sure backend is running on port 8083.`, 'error');
+            }
+        }
+        
+        async function testLogin() {
+            log('loginStatus', 'Testing login with admin@example.com / admin123...', 'info');
+            try {
+                const response = await fetch(`${API_BASE}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: 'admin@example.com', password: 'admin123' })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    log('loginStatus', `✅ Login successful! User: ${data.name} (${data.role})`, 'ok');
+                } else {
+                    log('loginStatus', `❌ Login failed: ${data.message}`, 'error');
+                }
+            } catch (error) {
+                log('loginStatus', `Error: ${error.message}`, 'error');
+            }
+        }
+        
+        async function testUsersEndpoint() {
+            log('dataStatus', 'Fetching /users endpoint...', 'info');
+            try {
+                const response = await fetch(`${API_BASE}/users`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    log('dataStatus', `✅ Users endpoint works! Found ${data.length} users`, 'ok');
+                } else {
+                    log('dataStatus', `❌ Error: ${data.message}`, 'error');
+                }
+            } catch (error) {
+                log('dataStatus', `Error: ${error.message}`, 'error');
+            }
+        }
+        
+        async function testPropertiesEndpoint() {
+            log('dataStatus', 'Fetching /properties endpoint...', 'info');
+            try {
+                const response = await fetch(`${API_BASE}/properties`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    log('dataStatus', `✅ Properties endpoint works! Found ${data.length} properties`, 'ok');
+                } else {
+                    log('dataStatus', `❌ Error: ${data.message}`, 'error');
+                }
+            } catch (error) {
+                log('dataStatus', `Error: ${error.message}`, 'error');
+            }
+        }
+        
+        function setTestUser() {
+            const testUser = {
+                id: 1,
+                name: "Admin User",
+                email: "admin@example.com",
+                role: "ADMIN"
+            };
+            localStorage.setItem('currentUser', JSON.stringify(testUser));
+            log('storageStatus', '✅ Test user set in localStorage', 'ok');
+            showLocalStorage();
+        }
+        
+        function clearLocalStorage() {
+            localStorage.clear();
+            log('storageStatus', '✅ localStorage cleared', 'ok');
+        }
+        
+        function showLocalStorage() {
+            const user = localStorage.getItem('currentUser');
+            if (user) {
+                const parsed = JSON.parse(user);
+                log('storageStatus', `✅ localStorage has user: ${parsed.name} (${parsed.role})`, 'ok');
+            } else {
+                log('storageStatus', 'ℹ️ No user in localStorage', 'info');
+            }
+        }
+        
+        function goToAdmin() {
+            window.location.href = 'admin.html';
+        }
+        
+        function goToLogin() {
+            window.location.href = 'login.html';
+        }
+        
+        function goToIndex() {
+            window.location.href = 'index.html';
+        }
+        
+        function checkAdminStructure() {
+            log('structureStatus', 'Fetching admin.html to check structure...', 'info');
+            fetch('admin.html')
+                .then(r => r.text())
+                .then(html => {
+                    const hasNavbar = html.includes('class="navbar"');
+                    const hasTabs = html.includes('class="tabs"');
+                    const hasLoadUsers = html.includes('onclick="loadUsers()"');
+                    const hasLoadProps = html.includes('onclick="viewAllProperties()"');
+                    const hasUsersTable = html.includes('id="usersTableContainer"');
+                    const hasPropsTable = html.includes('id="propertiesTableContainer"');
+                    
+                    let status = '';
+                    status += `${hasNavbar ? '✅' : '❌'} Navbar<br>`;
+                    status += `${hasTabs ? '✅' : '❌'} Tabs<br>`;
+                    status += `${hasLoadUsers ? '✅' : '❌'} loadUsers button<br>`;
+                    status += `${hasLoadProps ? '✅' : '❌'} viewAllProperties button<br>`;
+                    status += `${hasUsersTable ? '✅' : '❌'} Users table container<br>`;
+                    status += `${hasPropsTable ? '✅' : '❌'} Properties table container`;
+                    
+                    document.getElementById('structureStatus').innerHTML = `<div class="status-ok">${status}</div>`;
+                })
+                .catch(err => log('structureStatus', `Error: ${err.message}`, 'error'));
+        }
+    </script>
+</body>
+</html>
